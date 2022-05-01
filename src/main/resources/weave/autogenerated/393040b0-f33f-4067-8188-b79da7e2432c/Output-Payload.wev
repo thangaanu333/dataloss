@@ -1,0 +1,6 @@
+%dw 2.0
+// namespaces
+ns ns0 http://www.dataaccess.com/webservicesserver/
+
+type auto_393040b0_f33f_4067_8188_b79da7e2432c_Output_Payload = {| ns0#NumberToWords: {| ns0#ubiNum: Any |} |}
+

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="numberToWordsSub_Flow" doc:id="a76f5d67-a0db-483c-bbf3-38e5b03cb856" >
+		<logger level="INFO" doc:name="Logger" doc:id="abb29c4a-4acb-4612-be39-61f731f98f2a" message="Number to words initial Payload: #[payload]"/>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="0b6fc188-bdab-4766-8e68-457fe19509ca" variableName="numberToWords"/>
+		<ee:transform doc:name="Transform Message" doc:id="f6162a31-a455-4072-81e3-9997c59041a9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.dataaccess.com/webservicesserver/
+---
+{
+	ns0#NumberToWords: {
+		ns0#ubiNum: vars.numberToWords.number
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<try doc:name="Try" doc:id="49427f1e-8957-45f3-84e4-54a1f17d9080" >
+			<wsc:consume operation="NumberToWords" doc:id="65cc1b34-bdc7-4e82-9772-77c2ff0865c2" config-ref="Web_Service_Consumer_Config" target="consumedPayload"/>
+			<ee:transform doc:name="Transform Message" doc:id="00d0c4ca-8090-4b61-bf59-0c53b17ef6f5">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"enteredNumber": vars.numberToWords.number,
+	"convertedResult": vars.consumedPayload.body.NumberToWordsResponse.NumberToWordsResult
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			<logger level="INFO" doc:name="Logger" doc:id="0d0a3a5d-5b8a-44f8-a5d9-89a44799149e" message="After consumed payload: #[payload]"/>
+			<db:insert doc:id="f866306d-7cfd-45c6-9975-b98ba9e2d833" config-ref="Database_Config" target="dbPayload">
+				<db:sql ><![CDATA[insert into numberToWords(id,words) values (:id,:words)]]></db:sql>
+				<db:input-parameters ><![CDATA[#[{
+	id : payload.enteredNumber,
+	words: payload.convertedResult
+}]]]></db:input-parameters>
+			</db:insert>
+			<ee:transform doc:name="Transform Message" doc:id="03ff9877-3c8d-497b-896f-14ed49e649d9">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"enteredNumber": vars.numberToWords.number,
+	"convertedResult": vars.consumedPayload.body.NumberToWordsResponse.NumberToWordsResult
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="f55e7f12-d159-4bcd-8223-4152ab339bec" >
+					<flow-ref doc:name="commonSub_Flow" doc:id="c8bfa24c-69fb-4bd8-bf31-b1fe37e639ba" name="commonSub_Flow"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</sub-flow>
+</mule>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<sub-flow name="commonSub_Flow" doc:id="393040b0-f33f-4067-8188-b79da7e2432c" >
+	<logger level="INFO" doc:name="Logger" doc:id="23d57929-5755-4f67-912e-7041b122f11e" message="dataLoss prevention started: #[vars.numberToWords]"/>
+					<os:contains doc:name="Contains" doc:id="10716038-8db0-4e64-bca7-28814a0a444b" key="dataLoss" objectStore="dataLoss_Object_store"/>
+		<choice doc:name="Choice" doc:id="f67d0adc-a77d-44d2-8329-addf66082a38" >
+						<when expression="#[payload == true]">
+							<os:retrieve doc:name="Retrieve" doc:id="c9ff80c6-1567-40bb-b0ef-70435d48d30c" key="dataLoss" objectStore="dataLoss_Object_store"/>
+				<ee:transform doc:name="Transform Message" doc:id="edc6cb63-fae0-4a71-9a63-1e09e8befa8c" >
+								<ee:message >
+									<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+						
+</when>
+						<otherwise >
+							<os:store doc:name="Store" doc:id="79525c43-d602-470b-8da0-c7b73838f022" key="dataLoss" objectStore="dataLoss_Object_store">
+					<os:value ><![CDATA[#[vars.numberToWords]]]></os:value>
+				</os:store>
+				<ee:transform doc:name="Transform Message" doc:id="46e72506-96d8-40ce-b722-320d9897d421" >
+								<ee:message >
+									<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.numberToWords]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+						
+</otherwise>
+					</choice>
+					<flow-ref doc:name="numberToWordsSub_Flow" doc:id="57da58be-2c7a-407d-bed7-263ed377dc4e" name="numberToWordsSub_Flow"/>
+	</sub-flow>
+</mule>
