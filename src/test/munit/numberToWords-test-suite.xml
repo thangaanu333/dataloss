@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="numberToWords-test-suite.xml" />
+	<munit:test name="numberToWords-test-suite-numberToWordsSub_FlowTest" doc:id="16ca8fde-3698-403c-b707-d05a9a8c9938" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="771b4785-f8b9-45c3-a4f6-f94b681cdd76" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="NumberToWords" attributeName="operation" />
+					<munit-tools:with-attribute whereValue="Web_Service_Consumer_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="f00a31da-b4a3-4c02-a2c8-ee59d5b98924" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="dbPayload" attributeName="target" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="b597d4db-e978-4a06-afdf-85ae8d7bc80b" >
+				<munit:payload value='{"number":100}' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to numberToWordsSub_Flow" doc:id="fd73c284-9d51-4fb1-bc51-146c644c0836" name="numberToWordsSub_Flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="8ad8f443-8d0b-4868-a427-932eec51cdf4" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="numberToWords-test-suite-numberToWordsSub_FlowTest1" doc:id="70e1c08d-1490-4093-ba84-eba7bcaae517" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="96399252-9912-4dc2-acbf-d49fe03283ad" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="NumberToWords" attributeName="operation" />
+					<munit-tools:with-attribute whereValue="Web_Service_Consumer_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="#['APIKIT:BAD_REQUEST']" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="61927319-f1c9-48d4-8e2b-0d815ae4dc70" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="dbPayload" attributeName="target" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="22e91fc7-1898-4006-af6a-2cd50b84a1ff" processor="os:contains">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Contains" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="dataLoss" attributeName="key" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="50101396-15c0-41af-b249-58546abc2e00" processor="os:retrieve">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Retrieve" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="dataLoss" attributeName="key" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="3150d0d6-d978-4d0d-95fe-a755c9ca4f89" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Web_Service_Consumer_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="consumedPayload" attributeName="target" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		
+</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="efb01215-28ea-4acc-92ac-17ef1be6bb72" >
+				<munit:payload value='{"number":100}' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to numberToWordsSub_Flow" doc:id="edd5affb-34d8-4aef-bcc1-048eea331c1d" name="numberToWordsSub_Flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="54afd074-0380-42c3-a330-976d071d87e0" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="numberToWords-test-suite-numberToWordsSub_FlowTest2" doc:id="7e94311b-54c4-4caa-9976-a243b59007ae" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="3e1ac9f3-b075-4956-af66-1c101b779c07" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="NumberToWords" attributeName="operation" />
+					<munit-tools:with-attribute whereValue="Web_Service_Consumer_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="64c48b23-12a4-4434-aec1-12007010bd21" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="dbPayload" attributeName="target" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="#['APIKIT:BAD_REQUEST']" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d9f79ff5-75ad-431a-80e5-f602c8d13762" processor="os:contains">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Contains" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="dataLoss" attributeName="key" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="390e6865-57d3-4964-a1a4-7915fd6333ea" processor="os:store">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Store" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="dataLoss" attributeName="key" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c8d8c0b7-7978-43ac-a2cc-5d816085b924" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="dbPayload" attributeName="target" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		
+</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="54c7fb7b-02fc-4a43-ad42-052f07a5f476" >
+				<munit:payload value='{"number":100}' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to numberToWordsSub_Flow" doc:id="5c777549-1a59-4148-891f-875f5f052f37" name="numberToWordsSub_Flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="85b1c69e-a5ed-4d26-853c-87e56e7cfcaf" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+
+</mule>

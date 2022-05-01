@@ -1,4 +1,0 @@
-%dw 2.0
-
-type auto_a76f5d67_a0db_483c_bbf3_38e5b03cb856_Input_Variables_numberToWords = Any
-

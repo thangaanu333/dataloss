@@ -16,7 +16,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	<tls:context name="Numbers_TLS_Context" doc:name="TLS Context" doc:id="b170938a-a9e9-42b3-8bf1-059201187e90" >
 		<tls:key-store type="jks" path="${https.path}" alias="${https.alias}" keyPassword="${https.key.password}" password="${https.password}" />
 	</tls:context>
-	<!-- <api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="e7dcfd86-e4d0-44c2-a240-2d337b99e190" flowRef="dollarnumbertwords-main" /> -->
+	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="e7dcfd86-e4d0-44c2-a240-2d337b99e190" flowRef="dollarnumbertwords-main" />
 	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="135389c4-5de6-4374-8914-3d127448bb3e" >
 		<wsc:connection wsdlLocation="wsdl\numberToWords_dollars.wsdl" service="NumberConversion" port="NumberConversionSoap12" address="https://www.dataaccess.com/webservicesserver/NumberConversion.wso" />
 	</wsc:config>
