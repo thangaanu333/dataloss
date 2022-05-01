@@ -1,0 +1,51 @@
+#%RAML 1.0
+title: dollarNumberTwords
+description: Used to convert number to albhapets and number to dollars
+
+/api/sys/v1:
+  /numberToDollars/{number}:
+    description: Used to convert number to words.
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  "enteredNumber" : 12,
+                  "convertedResult" : "Tweleve dollars"
+                }
+        500:
+          body:
+            application/json:
+              example:
+                {
+                  "enteredInput" : 12,
+                  "convertedResult" : "Internal server error"
+                }
+  /numberToWords:
+    description: Used to convert number into words
+    post:
+      body:
+        application/json:
+          example:
+            {
+              "number" : 12
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  "enteredNumber" : 12,
+                  "convertedResult" : "Tweleve"
+                }
+        500:
+          body:
+            application/json:
+              example:
+                {
+                  "enteredInput" : 12,
+                  "convertedResult" : "Internal server error"
+                }
